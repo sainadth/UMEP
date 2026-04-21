@@ -63,7 +63,9 @@ const demSelect = document.getElementById("demSelect");
 const dsmFileInput = document.getElementById("dsmFileInput");
 const uploadDsmBtn = document.getElementById("uploadDsmBtn");
 const refreshDsmBtn = document.getElementById("refreshDsmBtn");
+const deleteDsmBtn = document.getElementById("deleteDsmBtn");
 const dsmSelect = document.getElementById("dsmSelect");
+const deleteDemBtn = document.getElementById("deleteDemBtn");
 
 let legendTmrtToggle = null;
 let legendTmrtOpacity = null;
@@ -372,6 +374,8 @@ async function refreshDemList() {
 
   if (current && dems.some((d) => d.dem_id === current)) {
     demSelect.value = current;
+  } else if (!current && dems.length > 0) {
+    demSelect.value = dems[0].dem_id;
   }
 
   const selected = dems.find((d) => d.dem_id === demSelect.value) || null;
@@ -398,6 +402,8 @@ async function refreshDsmList() {
 
   if (current && dsms.some((d) => d.dsm_id === current)) {
     dsmSelect.value = current;
+  } else if (!current && dsms.length > 0) {
+    dsmSelect.value = dsms[0].dsm_id;
   }
 
   const selected = dsms.find((d) => d.dsm_id === dsmSelect.value) || null;
@@ -414,11 +420,15 @@ async function loadDemOverlay(demId) {
     return;
   }
 
-  const overlay = await fetchJson(`/api/dem/${encodeURIComponent(demId)}/overlay`);
-  demOverlay = L.imageOverlay(`${overlay.image_url}?t=${Date.now()}`, overlay.bounds, {
-    opacity: demOpacity,
-  });
-  applyLayerVisibility(demOverlay, demVisible);
+  try {
+    const overlay = await fetchJson(`/api/dem/${encodeURIComponent(demId)}/overlay`);
+    demOverlay = L.imageOverlay(`${overlay.image_url}?t=${Date.now()}`, overlay.bounds, {
+      opacity: demOpacity,
+    });
+    applyLayerVisibility(demOverlay, demVisible);
+  } catch (err) {
+    setStatus(`DEM overlay error: ${err.message}`);
+  }
 }
 
 async function loadDsmOverlay(dsmId) {
@@ -431,11 +441,15 @@ async function loadDsmOverlay(dsmId) {
     return;
   }
 
-  const overlay = await fetchJson(`/api/dsm/${encodeURIComponent(dsmId)}/overlay`);
-  dsmOverlay = L.imageOverlay(`${overlay.image_url}?t=${Date.now()}`, overlay.bounds, {
-    opacity: dsmOpacity,
-  });
-  applyLayerVisibility(dsmOverlay, dsmVisible);
+  try {
+    const overlay = await fetchJson(`/api/dsm/${encodeURIComponent(dsmId)}/overlay`);
+    dsmOverlay = L.imageOverlay(`${overlay.image_url}?t=${Date.now()}`, overlay.bounds, {
+      opacity: dsmOpacity,
+    });
+    applyLayerVisibility(dsmOverlay, dsmVisible);
+  } catch (err) {
+    setStatus(`DSM overlay error: ${err.message}`);
+  }
 }
 
 async function runPrediction() {
@@ -577,6 +591,56 @@ refreshDsmBtn.addEventListener("click", async () => {
   try {
     await refreshDsmList();
     setStatus("DSM list refreshed");
+  } catch (err) {
+    setStatus(`Error: ${err.message}`);
+  }
+});
+
+deleteDemBtn.addEventListener("click", async () => {
+  const demId = demSelect.value;
+  if (!demId) {
+    setStatus("No DEM selected to delete.");
+    return;
+  }
+  try {
+    const res = await fetch(`/api/dem/${encodeURIComponent(demId)}`, { method: "DELETE" });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Delete failed: ${res.status} ${txt}`);
+    }
+    if (demOverlay) {
+      map.removeLayer(demOverlay);
+      demOverlay = null;
+    }
+    demSelect.value = "";
+    renderDemInfo(null);
+    await refreshDemList();
+    setStatus("DEM deleted.");
+  } catch (err) {
+    setStatus(`Error: ${err.message}`);
+  }
+});
+
+deleteDsmBtn.addEventListener("click", async () => {
+  const dsmId = dsmSelect.value;
+  if (!dsmId) {
+    setStatus("No DSM selected to delete.");
+    return;
+  }
+  try {
+    const res = await fetch(`/api/dsm/${encodeURIComponent(dsmId)}`, { method: "DELETE" });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Delete failed: ${res.status} ${txt}`);
+    }
+    if (dsmOverlay) {
+      map.removeLayer(dsmOverlay);
+      dsmOverlay = null;
+    }
+    dsmSelect.value = "";
+    renderDsmInfo(null);
+    await refreshDsmList();
+    setStatus("DSM deleted.");
   } catch (err) {
     setStatus(`Error: ${err.message}`);
   }

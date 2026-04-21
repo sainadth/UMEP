@@ -101,6 +101,10 @@ button.secondary {
   background: #606f7b;
 }
 
+button.danger {
+  background: #c0392b;
+}
+
 .status {
   margin-top: 10px;
   padding: 10px;
