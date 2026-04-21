@@ -118,7 +118,7 @@ function setLayerState(which, visible, opacity) {
     tmrtLayerToggle.checked = visible;
     tmrtOpacityInput.value = String(opacity);
     applyLayerVisibility(heatLayer, visible);
-    if (heatLayer) heatLayer.setStyle({ fillOpacity: opacity });
+    if (heatLayer && visible) heatLayer.setStyle({ fillOpacity: opacity });
     if (legendTmrtToggle) legendTmrtToggle.checked = visible;
     if (legendTmrtOpacity) legendTmrtOpacity.value = String(opacity);
   } else if (which === "dem") {
@@ -127,7 +127,7 @@ function setLayerState(which, visible, opacity) {
     demLayerToggle.checked = visible;
     demOpacityInput.value = String(opacity);
     applyLayerVisibility(demOverlay, visible);
-    if (demOverlay) demOverlay.setOpacity(opacity);
+    if (demOverlay && visible) demOverlay.setOpacity(opacity);
     if (legendDemToggle) legendDemToggle.checked = visible;
     if (legendDemOpacity) legendDemOpacity.value = String(opacity);
   } else if (which === "dsm") {
@@ -136,7 +136,7 @@ function setLayerState(which, visible, opacity) {
     dsmLayerToggle.checked = visible;
     dsmOpacityInput.value = String(opacity);
     applyLayerVisibility(dsmOverlay, visible);
-    if (dsmOverlay) dsmOverlay.setOpacity(opacity);
+    if (dsmOverlay && visible) dsmOverlay.setOpacity(opacity);
     if (legendDsmToggle) legendDsmToggle.checked = visible;
     if (legendDsmOpacity) legendDsmOpacity.value = String(opacity);
   }
@@ -483,6 +483,8 @@ demFileInput.addEventListener("change", async () => {
     setStatus(`DEM uploaded: ${uploaded.name}`);
   } catch (err) {
     setStatus(`Error: ${err.message}`);
+  } finally {
+    demFileInput.value = "";
   }
 });
 
@@ -510,6 +512,8 @@ dsmFileInput.addEventListener("change", async () => {
     setStatus(`DSM uploaded and overlaid: ${uploaded.name}`);
   } catch (err) {
     setStatus(`Error: ${err.message}`);
+  } finally {
+    dsmFileInput.value = "";
   }
 });
 
