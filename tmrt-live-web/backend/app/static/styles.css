@@ -271,6 +271,10 @@ button.secondary {
   white-space: nowrap;
 }
 
+.panel:has(.panel-section) {
+  padding: 0;
+}
+
 /* ── Info section ───────────────────────────────────────── */
 .info-section {
   padding: 14px 18px;
@@ -298,16 +302,18 @@ button.secondary {
   color: #888;
   cursor: pointer;
   line-height: 1;
+  border-radius: 0;
+  font-weight: 400;
 }
 
 .legend-layers {
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.25s ease;
+  transition: max-height 0.25s ease-in-out;
 }
 
 .legend-layers.open {
-  max-height: 140px;
+  max-height: 200px;
 }
 
 .legend-layer-sep {
