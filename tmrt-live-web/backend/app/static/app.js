@@ -76,13 +76,69 @@ const legendControl = L.control({ position: "topright" });
 legendControl.onAdd = () => {
   const div = L.DomUtil.create("div", "tmrt-legend leaflet-bar");
   div.innerHTML =
-    '<div class="tmrt-legend-title">TMRT (deg C)</div>' +
+    '<div class="tmrt-legend-header">' +
+      '<span class="tmrt-legend-title">TMRT (deg C)</span>' +
+      '<button class="legend-toggle-btn" id="legendToggleBtn" title="Toggle layers">⊞</button>' +
+    '</div>' +
     '<div class="tmrt-legend-gradient"></div>' +
-    '<div class="tmrt-legend-scale"><span id="legendMin">min</span><span id="legendMax">max</span></div>';
+    '<div class="tmrt-legend-scale"><span id="legendMin">min</span><span id="legendMax">max</span></div>' +
+    '<div class="legend-layers" id="legendLayers">' +
+      '<hr class="legend-layer-sep" />' +
+      '<div class="legend-layer-row">' +
+        '<input type="checkbox" id="legendTmrtToggle" checked />' +
+        '<span>TMRT</span>' +
+        '<input type="range" id="legendTmrtOpacity" min="0" max="1" step="0.05" value="0.6" />' +
+      '</div>' +
+      '<div class="legend-layer-row">' +
+        '<input type="checkbox" id="legendDemToggle" checked />' +
+        '<span>DEM</span>' +
+        '<input type="range" id="legendDemOpacity" min="0" max="1" step="0.05" value="0.55" />' +
+      '</div>' +
+      '<div class="legend-layer-row">' +
+        '<input type="checkbox" id="legendDsmToggle" checked />' +
+        '<span>DSM</span>' +
+        '<input type="range" id="legendDsmOpacity" min="0" max="1" step="0.05" value="0.55" />' +
+      '</div>' +
+    '</div>';
   L.DomEvent.disableClickPropagation(div);
   return div;
 };
 legendControl.addTo(map);
+
+const legendToggleBtn = document.getElementById("legendToggleBtn");
+const legendLayersDiv = document.getElementById("legendLayers");
+legendTmrtToggle = document.getElementById("legendTmrtToggle");
+legendTmrtOpacity = document.getElementById("legendTmrtOpacity");
+legendDemToggle = document.getElementById("legendDemToggle");
+legendDemOpacity = document.getElementById("legendDemOpacity");
+legendDsmToggle = document.getElementById("legendDsmToggle");
+legendDsmOpacity = document.getElementById("legendDsmOpacity");
+
+legendToggleBtn.addEventListener("click", () => {
+  const open = legendLayersDiv.classList.toggle("open");
+  legendToggleBtn.textContent = open ? "⊟" : "⊞";
+});
+
+legendTmrtToggle.addEventListener("change", () =>
+  setLayerState("tmrt", legendTmrtToggle.checked, tmrtOpacity)
+);
+legendTmrtOpacity.addEventListener("input", () =>
+  setLayerState("tmrt", tmrtVisible, Number(legendTmrtOpacity.value))
+);
+
+legendDemToggle.addEventListener("change", () =>
+  setLayerState("dem", legendDemToggle.checked, demOpacity)
+);
+legendDemOpacity.addEventListener("input", () =>
+  setLayerState("dem", demVisible, Number(legendDemOpacity.value))
+);
+
+legendDsmToggle.addEventListener("change", () =>
+  setLayerState("dsm", legendDsmToggle.checked, dsmOpacity)
+);
+legendDsmOpacity.addEventListener("input", () =>
+  setLayerState("dsm", dsmVisible, Number(legendDsmOpacity.value))
+);
 
 const legendMinEl = document.getElementById("legendMin");
 const legendMaxEl = document.getElementById("legendMax");
