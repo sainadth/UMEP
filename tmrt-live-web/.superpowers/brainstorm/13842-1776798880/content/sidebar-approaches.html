@@ -1,0 +1,101 @@
+<h2>Sidebar Layout Approaches</h2>
+<p class="subtitle">How should we separate Input fields from Layer controls?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Sidebar Sections + Legend Layer Panel</h3>
+      <p>Sidebar splits into two clearly-styled sections: <strong>Inputs</strong> (lat/lon/grid/span, neutral background) and <strong>Layers</strong> (TMRT/DEM/DSM with toggle + opacity, tinted background). The top-right legend <em>expands</em> with layer visibility checkboxes + opacity sliders — a mini layer manager on the map.</p>
+      <div class="mockup" style="margin-top:10px;font-size:11px;">
+        <div class="mockup-header" style="font-size:10px;">Sidebar preview</div>
+        <div class="mockup-body" style="padding:6px;display:flex;gap:6px;">
+          <div style="flex:1;background:#f0f4ff;border-radius:6px;padding:6px;border:1px solid #b8c8f0;">
+            <div style="font-size:9px;font-weight:700;color:#3a5;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">⚙ Inputs</div>
+            <div style="background:#fff;border-radius:4px;padding:3px 5px;margin-bottom:3px;border:1px solid #dde;font-size:10px;">Lat / Lon</div>
+            <div style="background:#fff;border-radius:4px;padding:3px 5px;margin-bottom:3px;border:1px solid #dde;font-size:10px;">Grid Size</div>
+            <div style="background:#fff;border-radius:4px;padding:3px 5px;border:1px solid #dde;font-size:10px;">Map Span</div>
+          </div>
+          <div style="flex:1;background:#fff8ee;border-radius:6px;padding:6px;border:1px solid #e8d8b0;">
+            <div style="font-size:9px;font-weight:700;color:#a60;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🗂 Layers</div>
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="font-size:10px;flex:1">TMRT</span> <input type="range" style="width:40px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="font-size:10px;flex:1">DEM</span> <input type="range" style="width:40px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="font-size:10px;flex:1">DSM</span> <input type="range" style="width:40px;padding:0"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:8px;font-size:11px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Familiar QGIS-style separation</li><li>Layer controls also on map legend</li><li>No new panels to manage</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Sidebar still has everything</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Sidebar Inputs Only + Floating Layer Panel</h3>
+      <p>Sidebar becomes <strong>Inputs only</strong> (lat/lon/grid/span + run button). All layer controls move to a <strong>floating draggable panel</strong> on the map (like QGIS's Layers dock), showing toggle checkboxes + opacity sliders for TMRT, DEM, DSM.</p>
+      <div class="mockup" style="margin-top:10px;font-size:11px;">
+        <div class="mockup-header" style="font-size:10px;">Map + floating layer panel</div>
+        <div class="mockup-body" style="padding:6px;">
+          <div style="background:#e8f4e8;border-radius:6px;padding:6px;border:1px solid #adc;margin-bottom:6px;font-size:10px;">
+            <div style="font-weight:700;margin-bottom:4px;">🗂 Layers <span style="float:right;cursor:pointer;opacity:.5">×</span></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="flex:1">TMRT</span> <span style="font-size:9px;color:#888">opacity</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="flex:1">DEM</span> <span style="font-size:9px;color:#888">opacity</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="checkbox" style="margin:0;width:auto"/> <span style="flex:1">DSM</span> <span style="font-size:9px;color:#888">opacity</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:8px;font-size:11px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean sidebar — only model inputs</li><li>Most QGIS-like feel</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>More complex (draggable floating panel)</li><li>Panel can obscure map</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Legend Expands to Full Layer Manager</h3>
+      <p>The top-right legend becomes a <strong>collapsible layer manager</strong>. Clicking it reveals all layers with checkboxes + opacity sliders. Sidebar keeps both inputs and minimal file-upload controls, but no layer toggles there. Layer interaction lives entirely in the legend widget.</p>
+      <div class="mockup" style="margin-top:10px;font-size:11px;">
+        <div class="mockup-header" style="font-size:10px;">Legend as layer manager (top-right on map)</div>
+        <div class="mockup-body" style="padding:6px;">
+          <div style="background:rgba(255,252,245,0.97);border-radius:8px;border:1px solid #cfc7b8;padding:8px;font-size:10px;max-width:180px;">
+            <div style="font-weight:700;margin-bottom:4px;">TMRT (deg C) <span style="float:right;cursor:pointer">▴</span></div>
+            <div style="height:8px;border-radius:4px;background:linear-gradient(to right,#2a9d8f,#f4d35e,#f08a4b,#d62828);margin-bottom:6px;"></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;color:#666;">15.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 48.0</div>
+            <hr style="border:none;border-top:1px solid #ddd;margin:4px 0 6px"/>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:4px;">Layers</div>
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="flex:1">TMRT</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+              <input type="checkbox" checked style="margin:0;width:auto"/> <span style="flex:1">DEM</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <input type="checkbox" style="margin:0;width:auto"/> <span style="flex:1">DSM</span> <input type="range" style="width:50px;padding:0"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:8px;font-size:11px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Layer controls right next to the map</li><li>Legend + layer manager in one widget</li><li>Sidebar much cleaner</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Legend gets tall when expanded</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

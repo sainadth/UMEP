@@ -1,0 +1,165 @@
+<h2>Design: Sidebar + Legend Layer Manager</h2>
+<p class="subtitle">Full mockup of both sections — approve or request changes</p>
+
+<div class="split" style="align-items:flex-start;gap:16px;">
+
+  <!-- SIDEBAR MOCKUP -->
+  <div class="mockup" style="flex:1;min-width:200px;">
+    <div class="mockup-header">Sidebar (360px)</div>
+    <div class="mockup-body" style="padding:0;font-size:11px;">
+
+      <!-- Header -->
+      <div style="padding:12px 14px 8px;border-bottom:1px solid #e0d8cc;">
+        <div style="font-size:15px;font-weight:700;">Live TMRT 2D</div>
+        <div style="color:#888;font-size:10px;">SOLWEIG-inspired operational predictor</div>
+      </div>
+
+      <!-- INPUTS SECTION -->
+      <div style="background:#f0f4ff;border-bottom:2px solid #c8d8f0;padding:10px 14px;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#3060c0;margin-bottom:8px;">⚙ Model Inputs</div>
+
+        <div style="font-size:10px;color:#555;margin-bottom:2px;">Latitude</div>
+        <div style="background:#fff;border:1px solid #c8d8f0;border-radius:5px;padding:4px 7px;margin-bottom:6px;font-size:11px;">27.713651</div>
+
+        <div style="font-size:10px;color:#555;margin-bottom:2px;">Longitude</div>
+        <div style="background:#fff;border:1px solid #c8d8f0;border-radius:5px;padding:4px 7px;margin-bottom:6px;font-size:11px;">-97.325456</div>
+
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;">
+            <div style="font-size:10px;color:#555;margin-bottom:2px;">Grid Size</div>
+            <div style="background:#fff;border:1px solid #c8d8f0;border-radius:5px;padding:4px 7px;font-size:11px;">40</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px;color:#555;margin-bottom:2px;">Map Span (m)</div>
+            <div style="background:#fff;border:1px solid #c8d8f0;border-radius:5px;padding:4px 7px;font-size:11px;">1200</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <div style="flex:2;background:#0f7c82;color:#fff;border-radius:7px;padding:7px;text-align:center;font-weight:700;font-size:11px;">▶ Run Prediction</div>
+          <div style="flex:1;background:#606f7b;color:#fff;border-radius:7px;padding:7px;text-align:center;font-size:11px;">Start Live</div>
+        </div>
+        <div style="margin-top:6px;background:#efe7d8;border:1px solid #ddd;border-radius:5px;padding:5px 7px;font-size:10px;color:#555;">Status: Idle</div>
+      </div>
+
+      <!-- LAYERS SECTION -->
+      <div style="background:#fff8ee;padding:10px 14px;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#a05a00;margin-bottom:8px;">🗂 Layers</div>
+
+        <!-- TMRT layer row -->
+        <div style="background:#fff;border:1px solid #e8d8b0;border-radius:6px;padding:6px 8px;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" checked style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="font-weight:600;font-size:11px;flex:1;">TMRT</span>
+            <span style="font-size:9px;color:#888;">opacity</span>
+            <input type="range" min="0" max="1" step="0.05" value="0.6" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+        </div>
+
+        <!-- DEM layer row -->
+        <div style="background:#fff;border:1px solid #e8d8b0;border-radius:6px;padding:6px 8px;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+            <input type="checkbox" checked style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="font-weight:600;font-size:11px;flex:1;">DEM</span>
+            <span style="font-size:9px;color:#888;">opacity</span>
+            <input type="range" min="0" max="1" step="0.05" value="0.55" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center;">
+            <select style="flex:1;font-size:10px;padding:3px;border-radius:4px;border:1px solid #ddd;">
+              <option>None (procedural terrain)</option>
+              <option>upl_cbmsc... (1234x567)</option>
+            </select>
+            <label style="font-size:9px;background:#eee;border:1px solid #ccc;border-radius:4px;padding:2px 5px;cursor:pointer;white-space:nowrap;">Upload ↑</label>
+          </div>
+        </div>
+
+        <!-- DSM layer row -->
+        <div style="background:#fff;border:1px solid #e8d8b0;border-radius:6px;padding:6px 8px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+            <input type="checkbox" checked style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="font-weight:600;font-size:11px;flex:1;">DSM</span>
+            <span style="font-size:9px;color:#888;">opacity</span>
+            <input type="range" min="0" max="1" step="0.05" value="0.55" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center;">
+            <select style="flex:1;font-size:10px;padding:3px;border-radius:4px;border:1px solid #ddd;">
+              <option>None</option>
+              <option>dsm_tamucc (800x600)</option>
+            </select>
+            <label style="font-size:9px;background:#eee;border:1px solid #ccc;border-radius:4px;padding:2px 5px;cursor:pointer;white-space:nowrap;">Upload ↑</label>
+          </div>
+        </div>
+
+        <!-- Info boxes -->
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Info</div>
+        <div style="background:#fff;border:1px solid #e0d8cc;border-radius:5px;padding:5px 7px;font-family:monospace;font-size:9px;color:#555;margin-bottom:4px;line-height:1.5;">Live Weather: Ta=28.3°C  RH=72%...</div>
+        <div style="background:#fff;border:1px solid #e0d8cc;border-radius:5px;padding:5px 7px;font-family:monospace;font-size:9px;color:#555;margin-bottom:4px;line-height:1.5;">DEM: upl_cbmsc... 1234×567...</div>
+        <div style="background:#fff;border:1px solid #e0d8cc;border-radius:5px;padding:5px 7px;font-family:monospace;font-size:9px;color:#555;line-height:1.5;">Selected Cell: tmrt=38.2°C svf=0.82...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND MOCKUP -->
+  <div style="flex:1;min-width:180px;">
+    <div class="mockup">
+      <div class="mockup-header">Legend (top-right on map) — expanded</div>
+      <div class="mockup-body" style="padding:10px;font-size:11px;">
+        <div style="background:rgba(255,252,245,0.97);border-radius:8px;border:1px solid #cfc7b8;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.12);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+            <span style="font-weight:700;font-size:11px;">TMRT (deg C)</span>
+            <span style="cursor:pointer;font-size:12px;color:#888;" title="collapse layers">⊟</span>
+          </div>
+          <div style="height:8px;border-radius:4px;background:linear-gradient(to right,#2a9d8f,#f4d35e,#f08a4b,#d62828);margin-bottom:3px;"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:8px;">
+            <span>15.0</span><span>48.0</span>
+          </div>
+          <hr style="border:none;border-top:1px solid #e0d8cc;margin:0 0 6px"/>
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#a05a00;margin-bottom:5px;">Layers</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+            <input type="checkbox" checked style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="flex:1;font-size:10px;">TMRT</span>
+            <input type="range" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+            <input type="checkbox" checked style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="flex:1;font-size:10px;">DEM</span>
+            <input type="range" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <input type="checkbox" style="margin:0;width:auto;accent-color:#0f7c82;"/>
+            <span style="flex:1;font-size:10px;">DSM</span>
+            <input type="range" style="width:60px;padding:0;accent-color:#0f7c82;"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mockup" style="margin-top:12px;">
+      <div class="mockup-header">Legend — collapsed</div>
+      <div class="mockup-body" style="padding:10px;font-size:11px;">
+        <div style="background:rgba(255,252,245,0.97);border-radius:8px;border:1px solid #cfc7b8;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.12);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+            <span style="font-weight:700;font-size:11px;">TMRT (deg C)</span>
+            <span style="cursor:pointer;font-size:12px;color:#888;" title="expand layers">⊞</span>
+          </div>
+          <div style="height:8px;border-radius:4px;background:linear-gradient(to right,#2a9d8f,#f4d35e,#f08a4b,#d62828);margin-bottom:3px;"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#666;">
+            <span>15.0</span><span>48.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:14px;font-size:11px;">
+      <h3 style="margin:0 0 6px;">Key behaviors</h3>
+      <ul style="margin:0;padding-left:16px;line-height:1.8;">
+        <li>Sidebar and legend controls <strong>stay in sync</strong> — change one, other updates</li>
+        <li>Checkbox unchecked → layer hidden from map</li>
+        <li>Opacity slider → live opacity update</li>
+        <li>Legend ⊟/⊞ button toggles layer rows with smooth CSS transition</li>
+        <li>Duplicate opacity controls removed (currently <code>tmrtOpacityInput</code> + <code>tmrtLayerOpacityInput</code> are redundant)</li>
+        <li>DEM "Refresh" button kept alongside upload inside layer card</li>
+      </ul>
+    </div>
+  </div>
+</div>
