@@ -1053,6 +1053,8 @@ This keeps Week 8 focused on architecture and correctness, before importing full
 - [ ] 5 test cases executed and logged.
 - [ ] Screenshots captured and added under `images/week8_first_computation/`.
 
+---
+
 # Week 9 — Real Sun-Position-Driven Kdown
 
 **Theme:** Replace the Week 8 placeholder computation with a real, sun-position-driven Kdown, fixing the finding that Week 8's output never changed with input time or date.
