@@ -113,6 +113,16 @@ GUI (date/time/UTC/radG) ──► time_dict/location_dict ──► sun_positio
 
 Because `radG` is a manually-entered constant (not derived from sun angle, clearness index, or time), two daytime runs at different times of day with the same `radG` will produce numerically identical `Kdown` — only the day/night boundary itself is time-sensitive in Week 9. This is an accurate reflection of SOLWEIG's own "single-timestep manual mode" (§2.5.1 of the weekly doc), which also takes `radG` as a direct manual input rather than deriving it. Full time-of-day sensitivity within daytime requires either a met file (multi-timestep, Week 11+) or clearness-index/direct-diffuse modeling (Week 10+ physics), not scoped here.
 
+## 6.1 Optional stretch goal (non-blocking)
+
+If time permits after the core Week 9 scope (§2) is done and tested, add a simple clear-sky estimate so `radG` varies with sun angle instead of staying a flat manual constant:
+
+```
+radG ≈ I0 * sin(sun_altitude) * transmissivity
+```
+
+where `I0` is extraterrestrial radiation (already a documented SOLWEIG POI output column, §2.4.2) and `transmissivity` is a fixed placeholder constant (e.g. 0.75) — not a real clearness-index model. This is explicitly a stretch goal, not a requirement: it must not block or delay the core deliverables in §7, and if dropped, Week 9 ships with manual `radG` as originally scoped. Full clearness-index/direct-diffuse modeling remains Week 10+ work.
+
 ## 7. Deliverables
 
 - Updated `hello_plugin.py` (v0.5) with SVF input, sun-position Kdown, day/night branching
