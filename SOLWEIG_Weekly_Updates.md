@@ -1112,7 +1112,7 @@ Subagent-driven code review caught two real issues before this shipped:
 | 3. Execution sequence & defaults               | ✅ Complete (W2)                                              |
 | 4. Architecture diagrams                       | ✅ Complete (hierarchy, data flow, execution, physics, I/O)   |
 | 5. UMEP/QGIS integration & plugin recipe       | ✅ Complete (W2)                                              |
-| 6. Build our own plugin                        | 🔄 In progress — W5–6 done; W7 threading/output; W8 baseline computation plan ready |
+| 6. Build our own plugin                        | 🔄 In progress — W5–6 done; W7 threading/output done; W8 baseline computation done; W9 real sun-position Kdown done (pending manual QGIS verification) |
 
 
 **Phase overview**
@@ -1124,7 +1124,7 @@ Subagent-driven code review caught two real issues before this shipped:
 | Physics deep dive & hands-on | 3–4   | 🗓 Flux assembly, run on sample data, output interpretation |
 | Plugin foundation            | 5–6   | ✅ Layer pickers, GDAL read, validation, parameters        |
 | Plugin build-out             | 7–8   | ✅ Detailed execution plans for threading, output, baseline computation |
-| Plugin build-out (implementation) | 9–12  | ⏳ Complete computation parity, validation depth, packaging, docs |
+| Plugin build-out (implementation) | 9–12  | ⏳ Week 9 (real sun-position Kdown) done; Weeks 10-12 (shadow casting, met-file loop, packaging, docs) not yet started |
 
 
 **Overall:** On track. Conceptual analysis and documentation (Objectives 1–5) are complete through Week 2; Weeks 3–6 are planned in detail above, with build-out continuing through Week 12.
