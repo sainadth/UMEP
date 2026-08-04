@@ -132,3 +132,10 @@ dmypy.json
 .pyre/
 
 .pyc
+
+# Office lock files
+~$*
+
+# Scratch/temp extraction files
+_docx_extract_tmp.txt
+_ext_*.txt
