@@ -1102,7 +1102,106 @@ Subagent-driven code review caught two real issues before this shipped:
 
 ---
 
-## Cumulative status (Weeks 1–9)
+# Weeks 10-12 — SOLWEIG Failure Audit, Robustness Hardening, POI Output, Air-Mass Clear-Sky
+
+## 10.1 Motivation
+
+Before adding more features on top of Week 9's real sun-position Kdown, we
+stepped back and audited the actual production SOLWEIG plugin
+(`SOLWEIG/solweig.py`, `solweigworker.py`, `SOLWEIG/SOLWEIGpython/*.py` in
+this repo) to find where it fails or silently produces wrong results for
+typical users. The full audit is `SOLWEIG_Failure_Analysis.md` (branch
+`docs/solweig-failure-analysis`). Highest-impact findings:
+
+1. Bare-except met-file/SVF loading gives opaque failures with no actionable
+   diagnostics.
+2. POI row/col conversion has no bounds check — an out-of-range POI throws an
+   unhandled `IndexError` deep in a run, often after a long computation.
+3. Known division-by-zero paths (`cylindric_wedge.py`, `gvf_2018a.py`) let
+   NaN/Inf silently propagate into results with no warning.
+4. Raster matching compares array shape only, missing CRS/origin drift, so
+   two misaligned rasters that happen to share dimensions pass validation
+   silently.
+
+These directly informed three weeks of work on `hello_qgis_plugin`, each on
+its own branch (all local; no remote configured for that repo yet):
+
+## 10.2 Week 10 — Robustness hardening (`week10-robustness`)
+
+`compute_week10.py` adds four pure, unit-tested functions addressing the four
+findings above one-to-one, wired into `hello_plugin.py`'s validation
+(`read_and_validate`) and worker (`Worker.run`) paths:
+
+- `rasters_match_strict` — extends the old shape+pixel-size check with CRS
+  (`authid`) and raster origin comparison (tolerance-aware).
+- `nodata_fraction_warning` — flags when NoData covers more than a
+  configurable fraction (default 30%) of a raster, instead of silently
+  zero-filling and continuing.
+- `validate_poi_in_bounds` — checks POI points against the raster grid during
+  validation, before a run starts, instead of crashing mid-run.
+- `sanitize_raster` — replaces non-finite and physically-implausible values
+  with the NoData sentinel before the output GeoTIFF is written, and reports
+  how many pixels were affected.
+
+14 new tests, all passing. Plugin bumped to v0.6.
+
+## 10.3 Week 11 — POI point-value extraction (`week11-poi-csv-output`)
+
+The Point layer picker existed since earlier weeks but was display-only
+(feature count only). `compute_week11.py` wires it to a real output, matching
+real SOLWEIG's point-output workflow for researchers who only need values at
+specific sensor/survey locations rather than a full raster:
+
+- `poi_to_row_col` / `extract_poi_values` — convert POI map coordinates to
+  raster indices and pull the computed Tmrt-like value at each, using
+  `validate_poi_in_bounds` from Week 10 so an out-of-range POI is reported
+  per-point instead of aborting the whole run.
+- `write_poi_csv` — writes `poi_values_week11.csv` next to the output raster.
+- `start_run` now collects POI features into plain dicts on the main thread
+  before handing off to the worker (QGIS layer objects shouldn't cross
+  threads).
+
+6 new tests, all passing. Plugin bumped to v0.7.
+
+## 10.4 Week 12 — Air-mass-corrected clear-sky radG (`week12-airmass-clearsky`)
+
+The Week 9 stretch-goal `clear_sky_radG` estimator used a flat transmissivity
+constant, independent of sun altitude — ignoring that direct beam travels
+through more atmosphere (and is attenuated more) at low sun angles.
+`compute_week12.py` adds:
+
+- `air_mass` — Kasten & Young (1989) relative optical air mass, finite at the
+  horizon (unlike naive `1/sin(altitude)`).
+- `clear_sky_radG_airmass` — Beer-Lambert-style extinction estimate,
+  `I = I0 * sin(altitude) * exp(-k * air_mass(altitude))`, directionally
+  correct at low altitude where the flat-transmissivity version overestimates
+  radiation.
+
+Like Week 9's `clear_sky_radG`, this is not wired into the UI — it stays a
+tested standalone estimator pending a decision on whether to offer it as an
+alternative to the manual radG input. 9 new tests, all passing.
+
+## 10.5 Test summary
+
+```
+python -m pytest tests/ -q
+# 48 passed (19 Weeks 8-9, 14 Week 10, 6 Week 11, 9 Week 12)
+```
+
+Not smoke-tested in a live QGIS session this round — reviewed by inspection
+and kept consistent with existing Week 6-9 wiring patterns, but should be
+verified in QGIS before relying on it for real research runs.
+
+## 10.6 Deliverables
+
+- `SOLWEIG_Failure_Analysis.md` (UMEP repo, branch `docs/solweig-failure-analysis`)
+- `hello_qgis_plugin` v0.7, branches `week10-robustness`, `week11-poi-csv-output`, `week12-airmass-clearsky`
+- `compute_week10.py`, `compute_week11.py`, `compute_week12.py`, `WEEK10_NOTES.md`
+- 48 passing unit tests total (`pytest tests/ -v`)
+
+---
+
+## Cumulative status (Weeks 1–12)
 
 
 | Objective                                      | Status                                                       |
@@ -1112,7 +1211,8 @@ Subagent-driven code review caught two real issues before this shipped:
 | 3. Execution sequence & defaults               | ✅ Complete (W2)                                              |
 | 4. Architecture diagrams                       | ✅ Complete (hierarchy, data flow, execution, physics, I/O)   |
 | 5. UMEP/QGIS integration & plugin recipe       | ✅ Complete (W2)                                              |
-| 6. Build our own plugin                        | 🔄 In progress — W5–6 done; W7 threading/output done; W8 baseline computation done; W9 real sun-position Kdown done (pending manual QGIS verification) |
+| 6. Build our own plugin                        | 🔄 In progress — W5–6 done; W7 threading/output done; W8 baseline computation done; W9 real sun-position Kdown done; W10 robustness hardening done; W11 POI CSV output done; W12 air-mass clear-sky estimate done (pending manual QGIS verification) |
+| 7. SOLWEIG failure-mode audit                  | ✅ Complete (`SOLWEIG_Failure_Analysis.md`, W10)              |
 
 
 **Phase overview**
@@ -1124,7 +1224,7 @@ Subagent-driven code review caught two real issues before this shipped:
 | Physics deep dive & hands-on | 3–4   | 🗓 Flux assembly, run on sample data, output interpretation |
 | Plugin foundation            | 5–6   | ✅ Layer pickers, GDAL read, validation, parameters        |
 | Plugin build-out             | 7–8   | ✅ Detailed execution plans for threading, output, baseline computation |
-| Plugin build-out (implementation) | 9–12  | ⏳ Week 9 (real sun-position Kdown) done; Weeks 10-12 (shadow casting, met-file loop, packaging, docs) not yet started |
+| Plugin build-out (implementation) | 9–12  | ✅ W9 real sun-position Kdown; W10 SOLWEIG failure audit + robustness hardening; W11 POI CSV output; W12 air-mass clear-sky estimate |
 
 
-**Overall:** On track. Conceptual analysis and documentation (Objectives 1–5) are complete through Week 2; Weeks 3–6 are planned in detail above, with build-out continuing through Week 12.
+**Overall:** On track. Conceptual analysis and documentation (Objectives 1–5) are complete through Week 2; Weeks 3–6 are planned in detail above; Weeks 9-12 shifted focus from Week 8's baseline formula toward hardening against real SOLWEIG's known failure modes (bare-except I/O, unbounded POI indexing, division-by-zero propagation, shape-only raster matching) and adding genuinely new capability (POI point output, altitude-aware clear-sky estimate) rather than chasing full physics parity. Remaining gaps vs. real SOLWEIG (shadow casting, multi-timestep met-file loop, anisotropic sky) are called out explicitly rather than approximated without verification.
